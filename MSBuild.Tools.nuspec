@@ -1,0 +1,23 @@
+﻿<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <version>0.1.5</version>
+    <authors>Alexis</authors>
+    <owners>inco</owners>
+    <license type="expression">MIT</license>
+    <projectUrl>https://github.com/alexis-/MSBuild.Tools</projectUrl>
+
+    <id>MSBuild.Tools</id>
+    <title>MSBuild.Tools</title>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Tools for MSBuild</description>
+    <copyright></copyright>
+  </metadata>
+  <files>
+    <file src="src/MSBuild.tools/bin/Release/MSBuild.Tools.dll" target="task" />
+    <file src="src/MSBuild.tools/bin/Release/OpenMcdf.dll" target="task" />
+  
+    <file src="MSBuild.Tools.props" target="build" />
+    <file src="MSBuild.Tools.targets" target="build" />
+  </files>
+</package>

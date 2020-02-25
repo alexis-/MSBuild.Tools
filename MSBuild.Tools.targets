@@ -1,0 +1,19 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  
+  <UsingTask TaskName="MSBuild.Tools.ReadSuoTask" AssemblyFile="$(MSBuildToolsDll)" />
+  
+  <Target Name="MSBuildToolsReadSuo">
+    <ItemGroup>
+      <SuoFile Include="$(SolutionDir).vs\$(SolutionName)\*\.suo" />
+    </ItemGroup>
+	
+    <ReadSuoTask SuoFilePath="%(SuoFile.FullPath)">
+	  <Output TaskParameter="SolutionConfiguration" PropertyName="SolutionConfiguration" />
+	  <Output TaskParameter="SolutionPlatform" PropertyName="SolutionPlatform" />
+	</ReadSuoTask>
+	
+	<PropertyGroup>
+	  <RunNuPack Condition=" $(SolutionConfiguration.StartsWith('NuPack')) ">True</RunNuPack>
+	</PropertyGroup>
+  </Target>
+</Project>
