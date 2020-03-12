@@ -1,6 +1,5 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-	<MSBuildToolsDll>$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)..\task\MSBuild.Tools.dll'))</MSBuildToolsDll>
 	<PackagesDirectory Condition=" '$(PackagesDirectory)' == '' ">$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)..\..'))</PackagesDirectory>
 	
 	<RunNuPack>False</RunNuPack>

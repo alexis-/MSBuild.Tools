@@ -1,6 +1,6 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   
-  <UsingTask TaskName="MSBuild.Tools.ReadSuoTask" AssemblyFile="$(MSBuildToolsDll)" />
+  <UsingTask TaskName="MSBuild.Tools.ReadSuoTask" AssemblyFile="$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)..\task\MSBuild.Tools.dll'))" />
   
   <Target Name="MSBuildToolsReadSuo">
     <ItemGroup>
