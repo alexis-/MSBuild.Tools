@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <version>0.0.0.0</version>
+    <authors>Alexis</authors>
+    <owners>inco</owners>
+    <license type="expression">MIT</license>
+    <projectUrl>https://github.com/alexis-/MSBuild.Tools</projectUrl>
+    <id>MSBuild.Tools</id>
+    <title>MSBuild.Tools</title>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Tools for MSBuild</description>
+    <copyright></copyright>
+    <releaseNotes>- Added: ExecEx task
+- Added: GitCreateChangeLog task
+- Added: GitCreateReleaseNotes task
+- Added: GitExec task
+- Added: GitGetCommitInfo task
+- Added: GitGetTagMessage task
+- Added: ReadFile task
+- Added: WriteFile task
+- Added: WriteNuSpec task
+- Added: Logging
+- Misc: Added several base classes &amp; helpers to improve the code quality &amp; logging
+- Misc: Refactored the namespaces organization
+- Fixed an issue when updating MSBuild.Tools
+- Added ReadSuoTask which reads the .suo and creates two macro in MSBuild: $(SolutionPlatform) and $(SolutionConfiguration)
+- Added a $(RunNuPack) macro which is set to True when the $(SolutionConfiguration) starts with "NuPack"
+- Added a $(PackagesDirectory) macro which points to the solution's package folder
+- Initial commit
+</releaseNotes>
+  </metadata>
+  <files>
+    <file src="MSBuild.Tools.dll" target="task" />
+    <file src="MSBuild.Tools.pdb" target="task" />
+    <file src="OpenMcdf.dll" target="task" />
+    <file src="../../../../MSBuild.Tools.props" target="build" />
+    <file src="../../../../MSBuild.Tools.targets" target="build" />
+  </files>
+</package>

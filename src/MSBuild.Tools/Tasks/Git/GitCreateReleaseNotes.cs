@@ -49,11 +49,8 @@ namespace MSBuild.Tools.Tasks.Git
     /// <summary>The format to apply, defaults to format:%B (the commit message)</summary>
     public string Format { get; set; } = "format:%B";
 
-    /// <summary>Optional git branch, defaults to HEAD</summary>
-    public string Branch { get; set; } = "HEAD";
-
-    /// <summary>Optional git remote, defaults to origin</summary>
-    public string Remote { get; set; } = "origin";
+    /// <summary>Optional git branch, defaults to master</summary>
+    public string RefSpec { get; set; } = "master";
 
     /// <summary>The tag's release note (if any)</summary>
     [Output]
@@ -77,10 +74,10 @@ namespace MSBuild.Tools.Tasks.Git
     /// <inheritdoc />
     public override bool ExecuteTask()
     {
-      ResolvedFromVersion = this.ExpandToCommitHash(FromVersion, Branch, Remote);
-      ResolvedToVersion   = this.ExpandToCommitHash(ToVersion, Branch, Remote);
+      ResolvedFromVersion = this.ExpandToCommitHash(FromVersion, RefSpec);
+      ResolvedToVersion   = this.ExpandToCommitHash(ToVersion, RefSpec);
 
-      ReleaseNotes = this.ConcatCommitInfo(ResolvedFromVersion, ResolvedToVersion, Format, Remote, Branch);
+      ReleaseNotes = this.ConcatCommitInfo(ResolvedFromVersion, ResolvedToVersion, Format, RefSpec);
 
       return true;
     }

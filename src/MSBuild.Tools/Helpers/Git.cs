@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Modified On:  2020/03/16 03:01
+// Modified On:  2020/03/17 15:51
 // Modified By:  Alexis
 
 #endregion
@@ -62,8 +62,7 @@ namespace MSBuild.Tools.Helpers
       string           fromCommitExcluded,
       string           toCommitIncluded,
       string           format                 = "format:%B",
-      string           remote                 = "origin",
-      string           branch                 = "HEAD",
+      string           refSpec                = "refs/remotes/origin/HEAD",
       bool             noMerges               = true,
       bool             exFatal                = true,
       bool             throwOnNonZeroExitCode = true)
@@ -72,7 +71,7 @@ namespace MSBuild.Tools.Helpers
         fromCommitExcluded = fromCommitExcluded + "..";
 
       if (string.IsNullOrWhiteSpace(toCommitIncluded))
-        toCommitIncluded = $"refs/remotes/{remote}/{branch}";
+        toCommitIncluded = refSpec;
 
       var noMergesStr = noMerges ? "--no-merges" : string.Empty;
 
@@ -86,22 +85,18 @@ namespace MSBuild.Tools.Helpers
 
     /// <summary>List all commits in the given remote and branch</summary>
     /// <param name="taskBase">The MSBuild task</param>
-    /// <param name="remote">The Git Remote</param>
-    /// <param name="branch">The Git Branch</param>
+    /// <param name="refSpec">The Git refSpec</param>
     /// <param name="exFatal">Whether an error is fatal</param>
     /// <param name="throwOnNonZeroExitCode">Whether to throw if Git returns a non-zero exit code</param>
     /// <returns></returns>
     public static string GetAllCommitsHash(
       this GitTaskBase taskBase,
-      string           remote                 = "origin",
-      string           branch                 = "HEAD",
+      string           refSpec                = "refs/remotes/origin/HEAD",
       bool             exFatal                = true,
       bool             throwOnNonZeroExitCode = true)
     {
-      var refName = $"refs/remotes/{remote}/{branch}";
-
-      return taskBase.ExecuteGit($"rev-list {refName}",
-                                 $"An error occured while listing all commits in {refName}",
+      return taskBase.ExecuteGit($"rev-list {refSpec}",
+                                 $"An error occured while listing all commits in {refSpec}",
                                  exFatal,
                                  throwOnNonZeroExitCode);
     }
@@ -129,20 +124,18 @@ namespace MSBuild.Tools.Helpers
 
     /// <summary>Lists all tags and their commit hash</summary>
     /// <param name="taskBase">The MSBuild task</param>
-    /// <param name="remote">The Git Remote</param>
-    /// <param name="branch">The Git Branch</param>
+    /// <param name="refSpec">The Git refSpec</param>
     /// <param name="exFatal">Whether an error is fatal</param>
     /// <param name="throwOnNonZeroExitCode">Whether to throw if Git returns a non-zero exit code</param>
     /// <returns>Map of tag name -> tag object</returns>
     public static Dictionary<string, GitTag> GetTagCommitMap(
       this GitTaskBase taskBase,
-      string           remote                 = "origin",
-      string           branch                 = "HEAD",
+      string           refSpec                = "refs/remotes/origin/HEAD",
       bool             exFatal                = true,
       bool             throwOnNonZeroExitCode = true)
     {
-      var merged = string.IsNullOrWhiteSpace(remote + branch) == false
-        ? $"--merged={remote ?? "origin"}/{branch ?? "HEAD"}"
+      var merged = string.IsNullOrWhiteSpace(refSpec) == false
+        ? $"--merged={refSpec}"
         : string.Empty;
       var output = taskBase.ExecuteGit($"tag -l {merged} --format=\"%(refname:strip=2) %(objecttype) %(objectname) %(object)\"",
                                        "An exception occured while list tags and their commit hash",

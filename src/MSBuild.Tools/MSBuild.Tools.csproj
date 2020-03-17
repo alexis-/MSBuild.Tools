@@ -1,5 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\..\packages\MSBuild.Tools.0.2.35\build\MSBuild.Tools.props" Condition="Exists('..\..\packages\MSBuild.Tools.0.2.35\build\MSBuild.Tools.props')" />
+  <Import Project="packages\MSBuild.Tools.0.2.30\build\MSBuild.Tools.props" Condition="Exists('packages\MSBuild.Tools.0.2.30\build\MSBuild.Tools.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -13,6 +15,19 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <ShouldCreateLogs>True</ShouldCreateLogs>
+    <AdvancedSettingsExpanded>False</AdvancedSettingsExpanded>
+    <UpdateAssemblyVersion>True</UpdateAssemblyVersion>
+    <UpdateAssemblyFileVersion>True</UpdateAssemblyFileVersion>
+    <UpdateAssemblyInfoVersion>True</UpdateAssemblyInfoVersion>
+    <AssemblyVersionSettings>IncrementOnDemand.IncrementOnDemand.IncrementWithResetOnIncrease.None</AssemblyVersionSettings>
+    <UpdatePackageVersion>False</UpdatePackageVersion>
+    <AssemblyInfoVersionType>SettingsVersion</AssemblyInfoVersionType>
+    <InheritWinAppVersionFrom>None</InheritWinAppVersionFrom>
+    <AssemblyFileVersionSettings>IncrementOnDemand.IncrementOnDemand.IncrementWithResetOnIncrease.None</AssemblyFileVersionSettings>
+    <AssemblyInfoVersionSettings>IncrementOnDemand.IncrementOnDemand.IncrementWithResetOnIncrease.None</AssemblyInfoVersionSettings>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -77,10 +92,49 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="MSBuild.Tools.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Tasks\GitHub\" />
   </ItemGroup>
+  <Target Name="Package" AfterTargets="Build" Condition=" $(SolutionConfiguration.StartsWith('NuPack')) ">
+    <PropertyGroup>
+      <NuSpecFileName>MSBuild.Tools.nuspec</NuSpecFileName>
+    </PropertyGroup>
+    <PropertyGroup>
+      <Git>git</Git>
+      <NuGet>$(SolutionDir)tools\nuget.exe</NuGet>
+      <MSBuildToolsExe>$(OutputPath)MSBuild.Tools.dll</MSBuildToolsExe>
+    </PropertyGroup>
+    <PropertyGroup>
+      <ReleaseDir>$(SolutionDir)releases\</ReleaseDir>
+      <NuSpecFile>$(ProjectDir)$(NuSpecFileName)</NuSpecFile>
+      <ChangeLogFile>$(SolutionDir)ChangeLogs</ChangeLogFile>
+    </PropertyGroup>
+    <GetAssemblyIdentity AssemblyFiles="$(MSBuildToolsExe)">
+      <Output TaskParameter="Assemblies" ItemName="smaAssembly" />
+    </GetAssemblyIdentity>
+    <PropertyGroup>
+      <Version>%(smaAssembly.Version)</Version>
+      <NuPkgFile>$(ReleaseDir)MSBuild.Tools.$(Version).nupkg</NuPkgFile>
+    </PropertyGroup>
+    <GitCreateChangeLog GitExecutable="$(Git)" Debug="False" GitDebug="False" PreserveChanges="False" RefSpec="HEAD" ChangeLogFilePath="$(ChangeLogFile)" NuSpecFilePath="$(NuSpecFile)">
+      <Output TaskParameter="CurrentVersionHasReleaseNotes" PropertyName="CurrentVersionHasReleaseNotes" />
+    </GitCreateChangeLog>
+    <Error Condition=" '$(CurrentVersionHasReleaseNotes)' == 'False' " Text="No release logs detected for current version. Commit your work to git before building your NuGet package." />
+    <Exec Command="$(NuGet) pack $(NuSpecFile) -Version $(Version) -OutputDirectory $(ReleaseDir) -BasePath $(OutputPath)" />
+  </Target>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('packages\MSBuild.Tools.0.2.30\build\MSBuild.Tools.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\MSBuild.Tools.0.2.30\build\MSBuild.Tools.props'))" />
+    <Error Condition="!Exists('packages\MSBuild.Tools.0.2.30\build\MSBuild.Tools.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\MSBuild.Tools.0.2.30\build\MSBuild.Tools.targets'))" />
+    <Error Condition="!Exists('..\..\packages\MSBuild.Tools.0.2.35\build\MSBuild.Tools.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\MSBuild.Tools.0.2.35\build\MSBuild.Tools.props'))" />
+    <Error Condition="!Exists('..\..\packages\MSBuild.Tools.0.2.35\build\MSBuild.Tools.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\MSBuild.Tools.0.2.35\build\MSBuild.Tools.targets'))" />
+  </Target>
+  <Import Project="packages\MSBuild.Tools.0.2.30\build\MSBuild.Tools.targets" Condition="Exists('packages\MSBuild.Tools.0.2.30\build\MSBuild.Tools.targets')" />
+  <Import Project="..\..\packages\MSBuild.Tools.0.2.35\build\MSBuild.Tools.targets" Condition="Exists('..\..\packages\MSBuild.Tools.0.2.35\build\MSBuild.Tools.targets')" />
 </Project>
