@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Modified On:  2020/02/24 20:08
+// Modified On:  2020/03/14 19:32
 // Modified By:  Alexis
 
 #endregion
@@ -33,13 +33,17 @@ using System;
 using System.IO;
 using System.Text;
 using Microsoft.Build.Framework;
-using Microsoft.Build.Utilities;
+using MSBuild.Tools.Helpers;
 using OpenMcdf;
 
-namespace MSBuild.Tools
+namespace MSBuild.Tools.Tasks
 {
   // Original https://stackoverflow.com/questions/55478699/is-there-any-way-to-get-the-active-solution-configuration-name-in-c-sharp-code
-  public class ReadSuoTask : Task, ITask
+  /// <summary>
+  ///   Reads the suo file of Visual Studio to make additional properties available in
+  ///   MSBuild
+  /// </summary>
+  public class ReadSuo : TaskBase
   {
     #region Constants & Statics
 
@@ -69,27 +73,18 @@ namespace MSBuild.Tools
     #region Methods Impl
 
     /// <inheritdoc />
-    public override bool Execute()
+    public override bool ExecuteTask()
     {
-      try
-      {
-        var activeCfg      = ExtractActiveSolutionConfig(new FileInfo(SuoFilePath));
-        var activeCfgSplit = activeCfg.Split('|');
+      var activeCfg      = ExtractActiveSolutionConfig(new FileInfo(SuoFilePath));
+      var activeCfgSplit = activeCfg.Split('|');
 
-        if (activeCfgSplit.Length != 2)
-          return false;
-
-        SolutionConfiguration = activeCfgSplit[0];
-        SolutionPlatform      = activeCfgSplit[1];
-
-        return true;
-      }
-      catch (ProgramResultException e)
-      {
-        Log.LogError(e.Message);
-
+      if (activeCfgSplit.Length != 2)
         return false;
-      }
+
+      SolutionConfiguration = activeCfgSplit[0];
+      SolutionPlatform      = activeCfgSplit[1];
+
+      return true;
     }
 
     #endregion

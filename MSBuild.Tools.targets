@@ -1,19 +1,35 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <MSBuildToolsFilePath>$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)..\task\MSBuild.Tools.dll'))</MSBuildToolsFilePath>
+  </PropertyGroup>
   
-  <UsingTask TaskName="MSBuild.Tools.ReadSuoTask" AssemblyFile="$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)..\task\MSBuild.Tools.dll'))" />
+  <UsingTask TaskName="MSBuild.Tools.Tasks.ExecEx" AssemblyFile="$(MSBuildToolsFilePath)" />
+  <UsingTask TaskName="MSBuild.Tools.Tasks.ReadSuo" AssemblyFile="$(MSBuildToolsFilePath)" />
   
-  <Target Name="MSBuildToolsReadSuo">
+  <UsingTask TaskName="MSBuild.Tools.Tasks.NuGet.WriteNuSpec" AssemblyFile="$(MSBuildToolsFilePath)" />
+  
+  <UsingTask TaskName="MSBuild.Tools.Tasks.IO.ReadFile" AssemblyFile="$(MSBuildToolsFilePath)" />
+  <UsingTask TaskName="MSBuild.Tools.Tasks.IO.WriteFile" AssemblyFile="$(MSBuildToolsFilePath)" />
+  
+  <UsingTask TaskName="MSBuild.Tools.Tasks.Git.GitExec" AssemblyFile="$(MSBuildToolsFilePath)" />
+  <UsingTask TaskName="MSBuild.Tools.Tasks.Git.GitGetCommitInfo" AssemblyFile="$(MSBuildToolsFilePath)" />
+  <UsingTask TaskName="MSBuild.Tools.Tasks.Git.GitGetTagMessage" AssemblyFile="$(MSBuildToolsFilePath)" />
+  <UsingTask TaskName="MSBuild.Tools.Tasks.Git.GitCreateReleaseNotes" AssemblyFile="$(MSBuildToolsFilePath)" />
+  <UsingTask TaskName="MSBuild.Tools.Tasks.Git.GitCreateChangeLog" AssemblyFile="$(MSBuildToolsFilePath)" />
+  
+  <Target Name="MSBuildToolsReadSuo" BeforeTargets="BeforeBuild">
     <ItemGroup>
       <SuoFile Include="$(SolutionDir).vs\$(SolutionName)\*\.suo" />
     </ItemGroup>
 	
-    <ReadSuoTask SuoFilePath="%(SuoFile.FullPath)">
-	  <Output TaskParameter="SolutionConfiguration" PropertyName="SolutionConfiguration" />
-	  <Output TaskParameter="SolutionPlatform" PropertyName="SolutionPlatform" />
-	</ReadSuoTask>
-	
-	<PropertyGroup>
-	  <RunNuPack Condition=" $(SolutionConfiguration.StartsWith('NuPack')) ">True</RunNuPack>
-	</PropertyGroup>
+    <ReadSuo SuoFilePath="%(SuoFile.FullPath)">
+      <Output TaskParameter="SolutionConfiguration" PropertyName="SolutionConfiguration" />
+      <Output TaskParameter="SolutionPlatform" PropertyName="SolutionPlatform" />
+    </ReadSuo>
+    
+    <PropertyGroup>
+      <RunNuPack Condition=" $(SolutionConfiguration.StartsWith('NuPack')) ">True</RunNuPack>
+    </PropertyGroup>
   </Target>
 </Project>

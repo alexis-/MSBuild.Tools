@@ -8,10 +8,11 @@
     <OutputType>Library</OutputType>
     <RootNamespace>MSBuild.Tools</RootNamespace>
     <AssemblyName>MSBuild.Tools</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -22,6 +23,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -31,13 +33,14 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Build.Framework, Version=15.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-    <Reference Include="Microsoft.Build.Utilities.Core, Version=15.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Build.Framework" />
+    <Reference Include="Microsoft.Build.Utilities.v4.0" />
     <Reference Include="OpenMcdf, Version=2.2.1.4, Culture=neutral, PublicKeyToken=fdbb1629d7c00800, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OpenMcdf.2.2.1.4\lib\net40\OpenMcdf.dll</HintPath>
     </Reference>
@@ -51,12 +54,33 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ReadSuoTask.cs" />
+    <Compile Include="Exceptions\ToolsException.cs" />
+    <Compile Include="Extensions\StringEx.cs" />
+    <Compile Include="Helpers\Git.cs" />
+    <Compile Include="Helpers\NuGet.cs" />
+    <Compile Include="Helpers\TaskBase.cs" />
+    <Compile Include="Models\GitTag.cs" />
+    <Compile Include="Models\PropertyEdit.cs" />
+    <Compile Include="Tasks\Git\GitCreateChangeLog.cs" />
+    <Compile Include="Tasks\IO\WriteFile.cs" />
+    <Compile Include="Tasks\IO\ReadFile.cs" />
+    <Compile Include="Tasks\Git\GitExec.cs" />
+    <Compile Include="Tasks\Git\GitTaskBase.cs" />
+    <Compile Include="Tasks\Git\GitCreateReleaseNotes.cs" />
+    <Compile Include="Tasks\Git\GitGetCommitInfo.cs" />
+    <Compile Include="Tasks\NuGet\WriteNuSpec.cs" />
+    <Compile Include="Tasks\Git\GitGetTagMessage.cs" />
+    <Compile Include="Tasks\ExecEx.cs" />
+    <Compile Include="Extensions\ProcessEx.cs" />
+    <Compile Include="Tasks\ReadSuo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Tasks\GitHub\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
