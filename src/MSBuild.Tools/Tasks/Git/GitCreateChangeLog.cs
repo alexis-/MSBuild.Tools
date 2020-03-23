@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Modified On:  2020/03/17 16:59
+// Modified On:  2020/03/18 23:53
 // Modified By:  Alexis
 
 #endregion
@@ -150,24 +150,32 @@ namespace MSBuild.Tools.Tasks.Git
 
       //
       // Create the next version release note
+      var allVersions        = versionDescMap.Values.ToList();
       var lastTag            = versionDescMap.Values.OrderByDescending(v => v.No).FirstOrDefault();
       var fromCommitExcluded = nextRelDesc?.CommitHash ?? lastTag?.CommitHash;
       var toCommitIncluded   = RefSpec;
+      var toCommitExpanded   = this.ExpandToCommitHash(toCommitIncluded);
 
-      string releaseNote = this.ConcatCommitInfo(fromCommitExcluded, toCommitIncluded);
+      if (toCommitExpanded != fromCommitExcluded)
+      {
+        string releaseNote = this.ConcatCommitInfo(fromCommitExcluded, toCommitIncluded);
 
-      if (nextRelDesc != null && string.IsNullOrWhiteSpace(nextRelDesc.Content.ToString()) == false)
-        releaseNote += "\n" + nextRelDesc.Content;
+        if (nextRelDesc != null && string.IsNullOrWhiteSpace(nextRelDesc.Content.ToString()) == false)
+          releaseNote += "\n" + nextRelDesc.Content;
 
-      nextRelDesc = new VersionDescription(VersionDescription.NextVersionName,
-                                           this.ExpandToCommitHash(toCommitIncluded),
-                                           (lastTag?.No ?? 0) + 1);
-      nextRelDesc.Content.Append(releaseNote);
+        nextRelDesc = new VersionDescription(VersionDescription.NextVersionName,
+                                             toCommitExpanded,
+                                             (lastTag?.No ?? 0) + 1);
+        nextRelDesc.Content.Append(releaseNote);
 
-      var allVersions = versionDescMap.Values.ToList();
-      allVersions.Add(nextRelDesc);
+        allVersions.Add(nextRelDesc);
+      }
 
-      CurrentVersionHasReleaseNotes = string.IsNullOrWhiteSpace(nextRelDesc.Content.ToString()) == false;
+      else
+        nextRelDesc = lastTag;
+      
+      CurrentVersionHasReleaseNotes = string.IsNullOrWhiteSpace(nextRelDesc?.Content.ToString()) == false;
+        
 
       //
       // Save ChangeLog
@@ -175,7 +183,7 @@ namespace MSBuild.Tools.Tasks.Git
 
       //
       // Write NuSpec if required
-      if (string.IsNullOrWhiteSpace(NuSpecFilePath) == false && File.Exists(NuSpecFilePath))
+      if (string.IsNullOrWhiteSpace(NuSpecFilePath) == false && File.Exists(NuSpecFilePath) && nextRelDesc != null)
         this.WriteNuSpec(NuSpecFilePath, "Replace", nuSpecProperty: "releaseNotes", nuSpecValue: nextRelDesc.Content.ToString());
 
       return true;

@@ -12,7 +12,8 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Tools for MSBuild</description>
     <copyright></copyright>
-    <releaseNotes>- Added: GitCreateChangeLog &gt; Categories
+    <releaseNotes>- Added: Development plugin flag
+- Added: GitCreateChangeLog &gt; Categories
 - Added: Use MSBuild.Tools to build &amp; package MSBuild.Tools
 - Fixed: GitCreateChangeLog &gt; Not using the local tree
 - Updated: GitCreateChangeLog &gt; Branch and Remote are now replaced by RefSpec
@@ -33,7 +34,8 @@
 - Added ReadSuoTask which reads the .suo and creates two macro in MSBuild: $(SolutionPlatform) and $(SolutionConfiguration)
 - Added a $(RunNuPack) macro which is set to True when the $(SolutionConfiguration) starts with "NuPack"
 - Added a $(PackagesDirectory) macro which points to the solution's package folder
-Initial commit</releaseNotes>
+- Initial commit
+</releaseNotes>
   </metadata>
   <files>
     <file src="MSBuild.Tools.dll" target="task" />
