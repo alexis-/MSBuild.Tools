@@ -1,7 +1,8 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-	<PackagesDirectory Condition=" '$(PackagesDirectory)' == '' ">$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)..\..'))</PackagesDirectory>
-	
-	<RunNuPack>False</RunNuPack>
+    <PackagesDirectory Condition=" '$(PackagesDirectory)' == '' ">$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)..\..'))</PackagesDirectory>
+    <RunNuPack>False</RunNuPack>
   </PropertyGroup>
+
+  <Import Project="MSBuild.Tools.Version.props" />
 </Project>

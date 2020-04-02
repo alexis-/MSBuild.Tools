@@ -12,36 +12,17 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Tools for MSBuild</description>
     <copyright></copyright>
-    <releaseNotes>- Added: Development plugin flag
-- Added: GitCreateChangeLog &gt; Categories
-- Added: Use MSBuild.Tools to build &amp; package MSBuild.Tools
-- Fixed: GitCreateChangeLog &gt; Not using the local tree
-- Updated: GitCreateChangeLog &gt; Branch and Remote are now replaced by RefSpec
-- Updated: Packages
-- Added: ExecEx task
-- Added: GitCreateChangeLog task
-- Added: GitCreateReleaseNotes task
-- Added: GitExec task
-- Added: GitGetCommitInfo task
-- Added: GitGetTagMessage task
-- Added: ReadFile task
-- Added: WriteFile task
-- Added: WriteNuSpec task
-- Added: Logging
-- Misc: Added several base classes &amp; helpers to improve the code quality &amp; logging
-- Misc: Refactored the namespaces organization
-- Fixed an issue when updating MSBuild.Tools
-- Added ReadSuoTask which reads the .suo and creates two macro in MSBuild: $(SolutionPlatform) and $(SolutionConfiguration)
-- Added a $(RunNuPack) macro which is set to True when the $(SolutionConfiguration) starts with "NuPack"
-- Added a $(PackagesDirectory) macro which points to the solution's package folder
-- Initial commit
+    <releaseNotes>- Updated: Empty next version don't get written making last tag the latest release
+- Added: Development plugin flag
 </releaseNotes>
   </metadata>
   <files>
     <file src="MSBuild.Tools.dll" target="task" />
     <file src="MSBuild.Tools.pdb" target="task" />
     <file src="OpenMcdf.dll" target="task" />
-    <file src="../../../../MSBuild.Tools.props" target="build" />
-    <file src="../../../../MSBuild.Tools.targets" target="build" />
+    <file src="Newtonsoft.Json.dll" target="task" />
+    <file src="../../../../../MSBuild.Tools.props" target="build" />
+    <file src="../../../../../MSBuild.Tools.Version.props" target="build" />
+    <file src="../../../../../MSBuild.Tools.targets" target="build" />
   </files>
 </package>

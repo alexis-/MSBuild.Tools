@@ -1,4 +1,4 @@
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" InitialTargets="MSBuildToolsReadSuo;SetGitExe" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <PropertyGroup>
     <MSBuildToolsFilePath>$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)..\task\MSBuild.Tools.dll'))</MSBuildToolsFilePath>
@@ -11,6 +11,7 @@
   
   <UsingTask TaskName="MSBuild.Tools.Tasks.IO.ReadFile" AssemblyFile="$(MSBuildToolsFilePath)" />
   <UsingTask TaskName="MSBuild.Tools.Tasks.IO.WriteFile" AssemblyFile="$(MSBuildToolsFilePath)" />
+  <UsingTask TaskName="MSBuild.Tools.Tasks.IO.WriteJsonFile" AssemblyFile="$(MSBuildToolsFilePath)" />
   
   <UsingTask TaskName="MSBuild.Tools.Tasks.Git.GitExec" AssemblyFile="$(MSBuildToolsFilePath)" />
   <UsingTask TaskName="MSBuild.Tools.Tasks.Git.GitGetCommitInfo" AssemblyFile="$(MSBuildToolsFilePath)" />
@@ -18,7 +19,7 @@
   <UsingTask TaskName="MSBuild.Tools.Tasks.Git.GitCreateReleaseNotes" AssemblyFile="$(MSBuildToolsFilePath)" />
   <UsingTask TaskName="MSBuild.Tools.Tasks.Git.GitCreateChangeLog" AssemblyFile="$(MSBuildToolsFilePath)" />
   
-  <Target Name="MSBuildToolsReadSuo" BeforeTargets="BeforeBuild">
+  <Target Name="MSBuildToolsReadSuo">
     <ItemGroup>
       <SuoFile Include="$(SolutionDir).vs\$(SolutionName)\*\.suo" />
     </ItemGroup>
@@ -31,5 +32,35 @@
     <PropertyGroup>
       <RunNuPack Condition=" $(SolutionConfiguration.StartsWith('NuPack')) ">True</RunNuPack>
     </PropertyGroup>
+  </Target>
+  
+  <!-- https://github.com/kzu/GitInfo/blob/master/src/GitInfo/build/GitInfo.targets -->
+	<PropertyGroup Condition="'$(GitExe)' == '' And !$([MSBuild]::IsOSPlatform(Windows))">
+		<GitExe Condition="Exists('/usr/bin/git')">/usr/bin/git</GitExe>
+		<GitExe Condition="Exists('/usr/local/bin/git')">/usr/local/bin/git</GitExe>
+		<GitExe Condition="$(GitExe) == ''">git</GitExe>
+	</PropertyGroup>
+
+  <!-- https://github.com/kzu/GitInfo/blob/master/src/GitInfo/build/GitInfo.targets -->
+	<Target Name="SetGitExe" Condition="'$(GitExe)' == '' And $([MSBuild]::IsOSPlatform(Windows))">
+    <!-- If git from %PATH% works, just use that -->
+		<Exec Command='git --version'
+			  EchoOff='true'
+			  ContinueOnError='true'
+			  IgnoreExitCode='true'
+			  StandardErrorImportance='low'
+			  StandardOutputImportance='low'>
+			<Output TaskParameter="ExitCode" PropertyName="MSBuildLastExitCode" />
+		</Exec>
+		<PropertyGroup Condition="'$(MSBuildLastExitCode)' == '0'">
+			<GitExe>git</GitExe>
+		</PropertyGroup>
+
+		<PropertyGroup Condition="'$(GitExe)' == ''">
+			<!-- We probe multiple places, with the first matching one winning -->
+			<GitExe Condition="'$(GitExe)' == '' And Exists('C:\Program Files\Git\bin\git.exe')">"C:\Program Files\Git\bin\git.exe"</GitExe>
+			<GitExe Condition="'$(GitExe)' == '' And Exists('C:\Program Files (x86)\Git\bin\git.exe')">"C:\Program Files (x86)\Git\bin\git.exe"</GitExe>
+			<GitExe Condition="'$(GitExe)' == '' And Exists('C:\msysgit\bin\git.exe')">C:\msysgit\bin\git.exe</GitExe>
+		</PropertyGroup>
   </Target>
 </Project>

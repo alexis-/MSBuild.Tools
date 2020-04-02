@@ -1,22 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\packages\MSBuild.Tools.0.2.35\build\MSBuild.Tools.props" Condition="Exists('..\..\packages\MSBuild.Tools.0.2.35\build\MSBuild.Tools.props')" />
-  <Import Project="packages\MSBuild.Tools.0.2.30\build\MSBuild.Tools.props" Condition="Exists('packages\MSBuild.Tools.0.2.30\build\MSBuild.Tools.props')" />
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{C6B4A572-4F78-4FDA-B9F0-55DFC12FA728}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>MSBuild.Tools</RootNamespace>
     <AssemblyName>MSBuild.Tools</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <PackageId>MSBuild.Tools.IgnoreCycle</PackageId>
+    <TargetFramework>net45</TargetFramework>
     <Deterministic>true</Deterministic>
-    <TargetFrameworkProfile />
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
+    <AssemblyVersion>0.2.58.0</AssemblyVersion>
+    <FileVersion>0.2.58.0</FileVersion>
+    <Version>0.2.43</Version>
     <ShouldCreateLogs>True</ShouldCreateLogs>
     <AdvancedSettingsExpanded>False</AdvancedSettingsExpanded>
     <UpdateAssemblyVersion>True</UpdateAssemblyVersion>
@@ -28,37 +21,14 @@
     <InheritWinAppVersionFrom>None</InheritWinAppVersionFrom>
     <AssemblyFileVersionSettings>IncrementOnDemand.IncrementOnDemand.IncrementWithResetOnIncrease.None</AssemblyFileVersionSettings>
     <AssemblyInfoVersionSettings>IncrementOnDemand.IncrementOnDemand.IncrementWithResetOnIncrease.None</AssemblyInfoVersionSettings>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <LangVersion>latest</LangVersion>
-  </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject />
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Build.Framework" />
     <Reference Include="Microsoft.Build.Utilities.v4.0" />
-    <Reference Include="OpenMcdf, Version=2.2.1.4, Culture=neutral, PublicKeyToken=fdbb1629d7c00800, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OpenMcdf.2.2.1.4\lib\net40\OpenMcdf.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -69,34 +39,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Exceptions\ToolsException.cs" />
-    <Compile Include="Extensions\StringEx.cs" />
-    <Compile Include="Helpers\Git.cs" />
-    <Compile Include="Helpers\NuGet.cs" />
-    <Compile Include="Helpers\TaskBase.cs" />
-    <Compile Include="Models\GitTag.cs" />
-    <Compile Include="Models\PropertyEdit.cs" />
-    <Compile Include="Tasks\Git\GitCreateChangeLog.cs" />
-    <Compile Include="Tasks\IO\WriteFile.cs" />
-    <Compile Include="Tasks\IO\ReadFile.cs" />
-    <Compile Include="Tasks\Git\GitExec.cs" />
-    <Compile Include="Tasks\Git\GitTaskBase.cs" />
-    <Compile Include="Tasks\Git\GitCreateReleaseNotes.cs" />
-    <Compile Include="Tasks\Git\GitGetCommitInfo.cs" />
-    <Compile Include="Tasks\NuGet\WriteNuSpec.cs" />
-    <Compile Include="Tasks\Git\GitGetTagMessage.cs" />
-    <Compile Include="Tasks\ExecEx.cs" />
-    <Compile Include="Extensions\ProcessEx.cs" />
-    <Compile Include="Tasks\ReadSuo.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-    <None Include="MSBuild.Tools.nuspec" />
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Tasks\GitHub\" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="OpenMcdf" Version="2.2.1.4" />
+    <PackageReference Include="MSBuild.Tools" Version="0.2.41">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
   <Target Name="Package" AfterTargets="Build" Condition=" $(SolutionConfiguration.StartsWith('NuPack')) ">
     <PropertyGroup>
@@ -123,18 +71,8 @@
       <Output TaskParameter="CurrentVersionHasReleaseNotes" PropertyName="CurrentVersionHasReleaseNotes" />
     </GitCreateChangeLog>
     <Error Condition=" '$(CurrentVersionHasReleaseNotes)' == 'False' " Text="No release logs detected for current version. Commit your work to git before building your NuGet package." />
+    <WriteFile FilePath="$(SolutionDir)MSBuild.Tools.Version.props" Content="&lt;Project&gt;%0a  &lt;PropertyGroup&gt;%0a    &lt;MSBuildToolsVersionString&gt;$(Version)&lt;/MSBuildToolsVersionString&gt;%0a  &lt;/PropertyGroup&gt;%0a&lt;/Project&gt;" />
     <Exec Command="$(NuGet) pack $(NuSpecFile) -Version $(Version) -OutputDirectory $(ReleaseDir) -BasePath $(OutputPath)" />
+    <Delete Files="$(SolutionDir)MSBuild.Tools.Version.props" />
   </Target>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('packages\MSBuild.Tools.0.2.30\build\MSBuild.Tools.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\MSBuild.Tools.0.2.30\build\MSBuild.Tools.props'))" />
-    <Error Condition="!Exists('packages\MSBuild.Tools.0.2.30\build\MSBuild.Tools.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\MSBuild.Tools.0.2.30\build\MSBuild.Tools.targets'))" />
-    <Error Condition="!Exists('..\..\packages\MSBuild.Tools.0.2.35\build\MSBuild.Tools.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\MSBuild.Tools.0.2.35\build\MSBuild.Tools.props'))" />
-    <Error Condition="!Exists('..\..\packages\MSBuild.Tools.0.2.35\build\MSBuild.Tools.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\MSBuild.Tools.0.2.35\build\MSBuild.Tools.targets'))" />
-  </Target>
-  <Import Project="packages\MSBuild.Tools.0.2.30\build\MSBuild.Tools.targets" Condition="Exists('packages\MSBuild.Tools.0.2.30\build\MSBuild.Tools.targets')" />
-  <Import Project="..\..\packages\MSBuild.Tools.0.2.35\build\MSBuild.Tools.targets" Condition="Exists('..\..\packages\MSBuild.Tools.0.2.35\build\MSBuild.Tools.targets')" />
 </Project>

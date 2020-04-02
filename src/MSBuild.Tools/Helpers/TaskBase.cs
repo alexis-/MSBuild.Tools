@@ -118,7 +118,7 @@ namespace MSBuild.Tools.Helpers
       BuildEngine.LogMessageEvent(new BuildMessageEventArgs(PrependMessage(message), "", "MSBuild.Tools", MessageImportance.Normal));
     }
 
-    public virtual void LogWarning(string message, string code)
+    public virtual void LogWarning(string message, string code = null)
     {
       LogWarning(message, null, 0, 0, 0, 0, code);
     }
