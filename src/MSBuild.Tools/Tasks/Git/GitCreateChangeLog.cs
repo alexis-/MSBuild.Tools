@@ -21,7 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Modified On:  2020/03/18 23:53
+// Created On:   2020/03/29 00:20
+// Modified On:  2020/04/10 22:54
 // Modified By:  Alexis
 
 #endregion
@@ -29,20 +30,20 @@
 
 
 
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using Microsoft.Build.Framework;
-using MSBuild.Tools.Exceptions;
-using MSBuild.Tools.Extensions;
-using MSBuild.Tools.Helpers;
-using MSBuild.Tools.Models;
-
 namespace MSBuild.Tools.Tasks.Git
 {
+  using System.Collections.Generic;
+  using System.Globalization;
+  using System.IO;
+  using System.Linq;
+  using System.Text;
+  using System.Text.RegularExpressions;
+  using Exceptions;
+  using Extensions;
+  using Helpers;
+  using Microsoft.Build.Framework;
+  using Models;
+
   /// <summary>
   ///   Attempts to automatically build a ChangeLog and optional Release notes for the NuSpec
   ///   file from git commits' messages
@@ -96,6 +97,10 @@ namespace MSBuild.Tools.Tasks.Git
     /// <summary>Whether the current version's release notes contain any content</summary>
     [Output]
     public bool CurrentVersionHasReleaseNotes { get; set; }
+
+    /// <summary>The release notes for the last version</summary>
+    [Output]
+    public string CurrentVersionReleaseNotes { get; set; }
 
     #endregion
 
@@ -172,14 +177,17 @@ namespace MSBuild.Tools.Tasks.Git
       }
 
       else
+      {
         nextRelDesc = lastTag;
-      
-      CurrentVersionHasReleaseNotes = string.IsNullOrWhiteSpace(nextRelDesc?.Content.ToString()) == false;
-        
+      }
+
 
       //
       // Save ChangeLog
       WriteChangeLog(allVersions);
+
+      CurrentVersionReleaseNotes    = nextRelDesc?.Content.ToString();
+      CurrentVersionHasReleaseNotes = string.IsNullOrWhiteSpace(nextRelDesc?.Content.ToString()) == false;
 
       //
       // Write NuSpec if required

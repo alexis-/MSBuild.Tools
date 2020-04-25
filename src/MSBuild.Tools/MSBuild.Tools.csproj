@@ -7,8 +7,8 @@
     <PackageId>MSBuild.Tools.IgnoreCycle</PackageId>
     <TargetFramework>net45</TargetFramework>
     <Deterministic>true</Deterministic>
-    <AssemblyVersion>0.2.58.0</AssemblyVersion>
-    <FileVersion>0.2.58.0</FileVersion>
+    <AssemblyVersion>0.2.60.0</AssemblyVersion>
+    <FileVersion>0.2.60.0</FileVersion>
     <Version>0.2.43</Version>
     <ShouldCreateLogs>True</ShouldCreateLogs>
     <AdvancedSettingsExpanded>False</AdvancedSettingsExpanded>

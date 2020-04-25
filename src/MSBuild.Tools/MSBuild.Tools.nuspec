@@ -12,7 +12,9 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Tools for MSBuild</description>
     <copyright></copyright>
-    <releaseNotes>- Updated: Empty next version don't get written making last tag the latest release
+    <releaseNotes>- Added: WriteJsonFile task
+- Added: Added $(GitExe) property
+- Updated: Empty next version don't get written making last tag the latest release
 - Added: Development plugin flag
 </releaseNotes>
   </metadata>
