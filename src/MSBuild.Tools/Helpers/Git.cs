@@ -125,19 +125,21 @@ namespace MSBuild.Tools.Helpers
     /// <summary>Lists all tags and their commit hash</summary>
     /// <param name="taskBase">The MSBuild task</param>
     /// <param name="refSpec">The Git refSpec</param>
+    /// <param name="sortField">The field to use when sorting the order of the tags (e.g. committerdate, v:refname, etc.)</param>
     /// <param name="exFatal">Whether an error is fatal</param>
     /// <param name="throwOnNonZeroExitCode">Whether to throw if Git returns a non-zero exit code</param>
     /// <returns>Map of tag name -> tag object</returns>
     public static Dictionary<string, GitTag> GetTagCommitMap(
       this GitTaskBase taskBase,
       string           refSpec                = "refs/remotes/origin/HEAD",
+      string           sortField              = "committerdate",
       bool             exFatal                = true,
       bool             throwOnNonZeroExitCode = true)
     {
       var merged = string.IsNullOrWhiteSpace(refSpec) == false
         ? $"--merged={refSpec}"
         : string.Empty;
-      var output = taskBase.ExecuteGit($"tag -l {merged} --format=\"%(refname:strip=2) %(objecttype) %(objectname) %(object)\"",
+      var output = taskBase.ExecuteGit($"tag -l {merged} --format=\"%(refname:strip=2) %(objecttype) %(objectname) %(object)\" --sort=\"{sortField}\"",
                                        "An exception occured while list tags and their commit hash",
                                        exFatal,
                                        throwOnNonZeroExitCode);

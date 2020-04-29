@@ -88,6 +88,9 @@ namespace MSBuild.Tools.Tasks.Git
     /// <summary>Optional git branch, defaults to master</summary>
     public string RefSpec { get; set; } = "master";
 
+    /// <summary>Optional field to use when sorting the tags (e.g. committerdate, v:refname, etc.), defaults to committerdate</summary>
+    public string TagSortField { get; set; } = "committerdate";
+
     /// <summary>
     ///   Optional semi-colon-separated categories to group commit message content together
     ///   (e.g. "Added;Fixed;Misc")
@@ -126,7 +129,7 @@ namespace MSBuild.Tools.Tasks.Git
 
       //
       // Synchronize Git and ChangeLog
-      var tagCommitMap = this.GetTagCommitMap(RefSpec);
+      var tagCommitMap = this.GetTagCommitMap(RefSpec, TagSortField);
 
       // Remove versions that do not exist in the tag list. That might cause issue when switching between branches
       foreach (var versionName in versionDescMap.Keys
